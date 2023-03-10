@@ -9,6 +9,7 @@ from nltk.corpus import cmudict
 
 # constants
 SYLLABLE_DICTIONARY_PATH = 'data/Syllable_dictionary.txt'
+SHAKESPEARE_DATA = 'data/shakespeare.txt'
 
 #%%
 # testing out the CMU dict
@@ -25,8 +26,6 @@ with open(SYLLABLE_DICTIONARY_PATH, 'r') as f:
       syllable_dict[word] = sentence[1:]
 
 # %%
-SHAKESPEARE_DATA = 'data/shakespeare.txt'
-
 # data = pd.read_csv(SHAKESPEARE_DATA, sep=" ", header=None)
 # # data.columns = ["a", "b", "c", "etc."]
 # print(data.head())
