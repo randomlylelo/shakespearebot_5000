@@ -1,4 +1,3 @@
-# 
 # %% Download the CMU dict
 import nltk
 nltk.download('cmudict')
@@ -9,11 +8,25 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-DATA_PATH = 'data/Syllable_dictionary.txt'
-
-data = pd.read_fwf(DATA_PATH, widths=10)
-
+# constants
+SYLLABLE_DICTIONARY_PATH = 'data/Syllable_dictionary.txt'
 
 #%%
+# testing out the CMU dict
+# cmudict.dict()
 
-len(cmudict.dict())
+# %%
+
+syllable_dict = {}
+with open(SYLLABLE_DICTIONARY_PATH, 'r') as f:
+  for line in f:
+    line = line.strip()
+
+    if line:
+      sentence = line.split(' ')
+      word = sentence[0]
+      syllable_dict[word] = sentence[1:]
+
+# %%
+
+print(syllable_dict)
