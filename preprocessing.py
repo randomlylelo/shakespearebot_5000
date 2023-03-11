@@ -1,4 +1,5 @@
 # %% Download the CMU dict
+from hw6_code_that_we_use import parse_observations, unsupervised_HMM
 from nltk.corpus import cmudict
 import re
 import matplotlib.pyplot as plt
@@ -7,6 +8,7 @@ import numpy as np
 
 import nltk
 nltk.download('cmudict')
+
 
 # constants
 SYLLABLE_DICTIONARY_PATH = 'data/Syllable_dictionary.txt'
@@ -56,6 +58,8 @@ with open(SHAKESPEARE_DATA, 'r') as f:
         return words_no_punc
 
     X = list(map(clean_line, all_lines))
+
+    X, X_map = parse_observations(X)
 
     print(X)
 
