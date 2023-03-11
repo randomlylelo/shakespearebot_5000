@@ -12,6 +12,7 @@ nltk.download('cmudict')
 # constants
 SYLLABLE_DICTIONARY_PATH = 'data/Syllable_dictionary.txt'
 SHAKESPEARE_DATA = 'data/shakespeare.txt'
+SPENSER_DATA = 'data/spenser.txt'
 
 # %%
 syllable_dict = {}
@@ -28,38 +29,69 @@ with open(SYLLABLE_DICTIONARY_PATH, 'r') as f:
 # testing out the CMU dict
 # cmudict.dict()
 
-# %%
-# data = pd.read_csv(SHAKESPEARE_DATA, sep=" ", header=None)
-# # data.columns = ["a", "b", "c", "etc."]
-# print(data.head())
+# %% data importing
+def has_roman_digit(string):
+    # def is_roman(char):
+    #     try:
+    #         roman.fromRoman(char)
+    #         # don't care lolz, if it doesn't error then it is a roman numeral
+    #         return True
+    #     except:
+    #         return False
+    # print(string)
+    # print(len(string))
+    # return any(is_roman(char) for char in string.split())
+    # ^DOESN'T WORK SINCE TAKES CHAR BUT ALSO 'I' is technically roman
+    # numeral so it breaks.
+
+    # lol major hack, since I prepared the data, all the roman numerals
+    # in blocks solo, so just take the length.
+    return len(string) < 10
+
+with open(SPENSER_DATA, 'r') as f:
+    all_data_sp = f.readlines()
+
+    # deal with the two edge cases in the data
+    # why tf does there exist ":poem"
+    all_data_sp = [listo for listo in all_data_sp if ':poem' not in listo]
+    # "LVIII.", just give up the whole stanza, no clue wtf it is
+    all_data_sp = [listo for listo in all_data_sp if 'LVIII.' not in listo]
+
+    all_lines_sp = list(filter(lambda line: not has_roman_digit(line), all_data_sp))
+
+# should be less bc of the white spaces
+# print(len(all_lines_sp) - len(all_data_sp))
 
 def has_digit(string):
     return any(char.isdigit() for char in string)
 
+with open(SHAKESPEARE_DATA, 'r') as f:
+    all_data_shake = f.readlines()
+    all_lines_shake = list(filter(lambda line: not has_digit(line), all_data_shake))
+
+# combine both datasets.
+all_lines = all_lines_shake + all_lines_sp
+
+# %% Data processing
 
 def remove_punctuation(string):
     return re.sub(r'[^\w\s]', '', string)
 
-with open(SHAKESPEARE_DATA, 'r') as f:
-    all_data = f.readlines()
-    all_lines = list(filter(lambda line: not has_digit(line), all_data))
+def clean_line(line):
+    words = line.split(' ')
 
-    def clean_line(line):
-        words = line.split(' ')
+    words_no_punc = []
 
-        words_no_punc = []
+    for word in words:
+        # Remove punctuation
+        words_no_punc.append(remove_punctuation(word).strip())
 
-        for word in words:
-            # Remove punctuation
-            words_no_punc.append(remove_punctuation(word).strip())
+    return words_no_punc
 
-        return words_no_punc
+X = list(map(clean_line, all_lines))
 
-    X = list(map(clean_line, all_lines))
+X, X_map = parse_observations(X)
 
-    X, X_map = parse_observations(X)
-
-    print(X)
 
 # %%
 
