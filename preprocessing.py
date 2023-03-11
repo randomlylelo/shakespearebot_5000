@@ -1,5 +1,5 @@
 # %% Download the CMU dict
-from hw6_code_that_we_use import parse_observations, unsupervised_HMM
+from hw6_code_that_we_use import parse_observations, unsupervised_HMM, sample_sentence
 from nltk.corpus import cmudict
 import re
 import matplotlib.pyplot as plt
@@ -9,15 +9,11 @@ import numpy as np
 import nltk
 nltk.download('cmudict')
 
-
 # constants
 SYLLABLE_DICTIONARY_PATH = 'data/Syllable_dictionary.txt'
 SHAKESPEARE_DATA = 'data/shakespeare.txt'
 
 # %%
-# testing out the CMU dict
-# cmudict.dict()
-
 syllable_dict = {}
 with open(SYLLABLE_DICTIONARY_PATH, 'r') as f:
     for line in f:
@@ -28,11 +24,14 @@ with open(SYLLABLE_DICTIONARY_PATH, 'r') as f:
             word = sentence[0]
             syllable_dict[word] = sentence[1:]
 
+# TODO: Use CMUDict for rhymes
+# testing out the CMU dict
+# cmudict.dict()
+
 # %%
 # data = pd.read_csv(SHAKESPEARE_DATA, sep=" ", header=None)
 # # data.columns = ["a", "b", "c", "etc."]
 # print(data.head())
-
 
 def has_digit(string):
     return any(char.isdigit() for char in string)
@@ -40,7 +39,6 @@ def has_digit(string):
 
 def remove_punctuation(string):
     return re.sub(r'[^\w\s]', '', string)
-
 
 with open(SHAKESPEARE_DATA, 'r') as f:
     all_data = f.readlines()
@@ -63,16 +61,6 @@ with open(SHAKESPEARE_DATA, 'r') as f:
 
     print(X)
 
-    # print(X)
-    # print(all_data)
-    # print(all_data[:100])
-    # print(type(all_data))
-
-# %%
-# s = 'hello there, good sir'
-# print(re.sub(r'[^\w\s]', '', s))
-
-
 # %%
 
 """
@@ -91,3 +79,14 @@ what we'll need:
 
 
 """
+num_hidden_states = 10
+# more iters take a while
+N_iters = 10
+HMM = unsupervised_HMM(X, num_hidden_states, N_iters, seed=None)
+
+# %%
+# create sonnet
+for _ in range(14):
+  print(sample_sentence(HMM, X_map, n_words=10))
+
+# %%

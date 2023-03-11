@@ -1,5 +1,13 @@
+import os
 import re
-
+import random
+import urllib.request
+import numpy as np
+import matplotlib.pyplot as plt
+from wordcloud import WordCloud
+from matplotlib import animation
+from matplotlib.animation import FuncAnimation
+from tqdm import tqdm
 
 def parse_observations(lines):
     # Convert text to dataset.
@@ -26,6 +34,24 @@ def parse_observations(lines):
         obs.append(obs_elem)
 
     return obs, obs_map
+
+def obs_map_reverser(obs_map):
+    obs_map_r = {}
+
+    for key in obs_map:
+        obs_map_r[obs_map[key]] = key
+
+    return obs_map_r
+
+def sample_sentence(hmm, obs_map, n_words=100, seed=None):
+    # Get reverse map.
+    obs_map_r = obs_map_reverser(obs_map)
+
+    # Sample and convert sentence.
+    emission, states = hmm.generate_emission(n_words, seed=seed)
+    sentence = [obs_map_r[i] for i in emission]
+
+    return ' '.join(sentence).capitalize() + '...'
 
 
 class HiddenMarkovModel:
