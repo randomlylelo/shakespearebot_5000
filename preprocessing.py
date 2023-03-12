@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 from tqdm import tqdm
+import random
 
 import nltk
 nltk.download('cmudict')
@@ -124,8 +125,39 @@ HMM = unsupervised_HMM(X, num_hidden_states, N_iters, seed=None)
 
 # %%
 rhyme_groups = {}
+
+def convert(lst):
+    return ([i for i in lst.split()])
+
+def sentenceSyllable(sent): #for haikus only
+    sentence = convert(sent)
+    syllables = 0
+    for word in sentence:
+        word = remove_punctuation(word)
+        if(word != ' '):  
+            if (word.lower() in syllable_dict) == False:
+                return 1000 #auto reject
+            
+            count = syllable_dict[word.lower()][0]
+            
+            
+            if 'E' in count:
+                count = int(count[1:])
+            else:
+                count = int(count)
+        else:
+            count = 0
+        
+            
+        syllables += count
+    
+    return syllables
+
+
 for _ in tqdm(range(1000)):
-    line = sample_sentence(HMM, X_map, n_words=10)
+    line = sample_sentence(HMM, X_map, n_words=random.randint(1, 10))
+    while sentenceSyllable(line) != 10:
+        line = sample_sentence(HMM, X_map, n_words=random.randint(1, 10))
     word_list = line.split(" ")
     last_word = word_list[len(word_list) - 1]
     if (len(last_word) < 2):
@@ -206,7 +238,7 @@ for _ in tqdm(range(1000)):
             cmu_rhyme_groups[pronouce] = []
         cmu_rhyme_groups[pronouce].append(line)
 
-print(cmu_rhyme_groups)
+# print(cmu_rhyme_groups)
 
 # to_print = []
 # for key in cmu_rhyme_groups:
