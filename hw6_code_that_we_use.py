@@ -50,6 +50,10 @@ def sample_sentence(hmm, obs_map, n_words=100, seed=None):
     # Sample and convert sentence.
     emission, states = hmm.generate_emission(n_words, seed=seed)
     sentence = [obs_map_r[i] for i in emission]
+    
+    for word in sentence:
+        if word == ' ':
+            sentence.remove(word)
 
     return ' '.join(sentence).capitalize()
 
